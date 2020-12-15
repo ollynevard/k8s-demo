@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  back_end_app:
+    image: k8s_demo_back_end_app:dev
+    build:
+      context: back-end
+      dockerfile: docker/Dockerfile
+      target: app-dev
+
+  back_end_web:
+    image: k8s_demo_back_end_web:dev
+    build:
+      context: back-end
+      dockerfile: docker/Dockerfile
+      target: web-dev
+    environment:
+      - BACK_END_APP_HOST=back_end_app
+      - BACK_END_APP_PORT=9000
+    ports:
+      - "8080:80"
+    depends_on:
+      - back_end_app
