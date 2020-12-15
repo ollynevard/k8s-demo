@@ -15,9 +15,9 @@ services:
       dockerfile: docker/Dockerfile
       target: web-dev
     environment:
-      - BACK_END_APP_HOST=back_end_app
+      - BACK_END_APP_HOSTNAME=back_end_app
       - BACK_END_APP_PORT=9000
     ports:
-      - "8080:80"
+      - 8080:80
     depends_on:
       - back_end_app

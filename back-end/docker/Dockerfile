@@ -2,7 +2,7 @@ ARG PHP_VERSION=7.4
 ARG NGINX_VERSION=1.19.2
 
 #
-# PHP: Base ====================================================================
+# App: Base ====================================================================
 #
 FROM php:${PHP_VERSION}-fpm-alpine AS app-base
 
@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 #
-# PHP: Production ==============================================================
+# App: Production ==============================================================
 #
 FROM app-base as app-prod
 
@@ -29,7 +29,7 @@ RUN set -ex; \
 COPY app /app
 
 #
-# PHP: Development =============================================================
+# App: Development =============================================================
 #
 FROM app-base as app-dev
 
@@ -77,7 +77,7 @@ RUN composer install --no-progress
 COPY app /app
 
 #
-# Nginx: Base ==================================================================
+# Web: Base ==================================================================
 #
 FROM nginx:${NGINX_VERSION}-alpine AS web-base
 
@@ -85,7 +85,7 @@ FROM nginx:${NGINX_VERSION}-alpine AS web-base
 COPY docker/default.conf.template /etc/nginx/templates/
 
 #
-# Nginx: Production ============================================================
+# Web: Production ============================================================
 #
 FROM web-base as web-prod
 
@@ -93,7 +93,7 @@ FROM web-base as web-prod
 COPY --from=app-prod /app/public /app/public
 
 #
-# Nginx: Development ===========================================================
+# Web: Development ===========================================================
 #
 FROM web-base as web-dev
 
