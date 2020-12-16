@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  labels:
+    tier: back-end
+spec:
+  selector:
+    tier: back-end
+    app: php
+  ports:
+    - port: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    tier: back-end
+spec:
+  type: NodePort
+  selector:
+    tier: back-end
+    app: nginx
+  ports:
+    - port: 80
+      nodePort: 31000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+  labels:
+    tier: back-end
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: php
+      tier: back-end
+  template:
+    metadata:
+      labels:
+        app: php
+        tier: back-end
+    spec:
+      containers:
+        - name: php
+          image: k8s-demo-back-end-php:dev
+          ports:
+            - containerPort: 9000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    tier: back-end
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+      tier: back-end
+  template:
+    metadata:
+      labels:
+        app: nginx
+        tier: back-end
+    spec:
+      containers:
+        - name: nginx
+          image: k8s-demo-back-end-nginx:dev
+          ports:
+            - containerPort: 80
