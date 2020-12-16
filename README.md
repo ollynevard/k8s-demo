@@ -2,75 +2,73 @@
 
 An example project to demonstrate development/deployment workflows with Kubernetes.
 
-## Docker
+## Build
 
-Steps to manually build and run the app with the `docker` CLI.
+Build the images with the `docker` CLI.
 
-1. Build the images
+```
+docker build \
+  --file back-end/docker/Dockerfile \
+  --target php-dev \
+  --tag k8s-demo-back-end-php:dev \
+  back-end
 
-   ```
-   docker build \
-     --file back-end/docker/Dockerfile \
-     --target app-dev \
-     --tag k8s_demo_back_end_app:dev \
-     back-end
+docker build \
+  --file back-end/docker/Dockerfile \
+  --target nginx-dev \
+  --tag k8s-demo-back-end-nginx:dev \
+  back-end
+```
 
-   docker build \
-     --file back-end/docker/Dockerfile \
-     --target web-dev \
-     --tag k8s_demo_back_end_web:dev \
-     back-end
-   ```
+## Run
 
-2. Create the network and create and run the containers
+### Docker
 
-   ```
-   docker network create k8s_demo
+Running the app using the `docker` CLI:
 
-   docker run \
-     --rm \
-     --detach \
-     --network k8s_demo \
-     --hostname back_end_app \
-     --name k8s_demo_back_end_app \
-     k8s_demo_back_end_app:dev
+```
+docker network create k8s-demo
 
-   docker run \
-     --rm \
-     --detach \
-     --network k8s_demo \
-     --hostname back_end_web \
-     --publish 8080:80 \
-     --env BACK_END_APP_HOSTNAME=back_end_app \
-     --env BACK_END_APP_PORT=9000 \
-     --name k8s_demo_back_end_web \
-     k8s_demo_back_end_web:dev
-   ```
+docker run \
+  --rm \
+  --detach \
+  --network k8s-demo \
+  --hostname back-end-php \
+  --name k8s-demo-back-end-php \
+  k8s-demo-back-end-php:dev
 
-   View the running app at http://localhost:8080
+docker run \
+  --rm \
+  --detach \
+  --network k8s-demo \
+  --hostname back-end-nginx \
+  --publish 31000:80 \
+  --name k8s-demo-back-end-nginx \
+  k8s-demo-back-end-nginx:dev
+```
 
-3. Stop and remove the containers and remove the network
+View the running app at http://localhost:31000.
 
-   ```
-   docker stop k8s_demo_back_end_app k8s_demo_back_end_web
+Stop and remove the containers and remove the network:
 
-   docker network remove k8s_demo
-   ```
+```
+docker stop k8s-demo-back-end-php k8s-demo-back-end-nginx
+
+docker network remove k8s-demo
+```
 
 ## Docker Compose
 
-Steps to build and run the app using `docker-compose`
+Run the app using the `docker-compose` CLI (this will also build the images if they don't already exist):
 
-1. Build the images, create the network, and create and run the containers
+```
+docker-compose up --detach
+```
 
-   ```
-   docker-compose --project-name k8s_demo up --detach
-   ```
+View the running app at http://localhost:31000.
 
-   View the running app at http://localhost:8080
+Stop and remove the containers and remove the network:
 
-2. Stop and remove the containers and remove the network
-
-   ```
-   docker-compose --project-name k8s_demo down
-   ```
+```
+docker-compose down
+```

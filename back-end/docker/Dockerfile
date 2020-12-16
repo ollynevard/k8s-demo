@@ -2,9 +2,9 @@ ARG PHP_VERSION=7.4
 ARG NGINX_VERSION=1.19.2
 
 #
-# App: Base ====================================================================
+# PHP: Base ====================================================================
 #
-FROM php:${PHP_VERSION}-fpm-alpine AS app-base
+FROM php:${PHP_VERSION}-fpm-alpine AS php-base
 
 WORKDIR /app
 
@@ -12,9 +12,9 @@ WORKDIR /app
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 #
-# App: Production ==============================================================
+# PHP: Production ==============================================================
 #
-FROM app-base as app-prod
+FROM php-base as php-prod
 
 # Copy PHP config
 COPY docker/php.ini /usr/local/etc/php/conf.d/php.ini
@@ -29,9 +29,9 @@ RUN set -ex; \
 COPY app /app
 
 #
-# App: Development =============================================================
+# PHP: Development =============================================================
 #
-FROM app-base as app-dev
+FROM php-base as php-dev
 
 # Install development dependencies
 RUN set -ex; \
@@ -77,25 +77,25 @@ RUN composer install --no-progress
 COPY app /app
 
 #
-# Web: Base ==================================================================
+# Nginx: Base ==================================================================
 #
-FROM nginx:${NGINX_VERSION}-alpine AS web-base
+FROM nginx:${NGINX_VERSION}-alpine AS nginx-base
 
 # Copy Nginx config template
 COPY docker/default.conf.template /etc/nginx/templates/
 
 #
-# Web: Production ============================================================
+# Nginx: Production ============================================================
 #
-FROM web-base as web-prod
+FROM nginx-base as nginx-prod
 
 # Copy public application files
-COPY --from=app-prod /app/public /app/public
+COPY --from=php-prod /app/public /app/public
 
 #
-# Web: Development ===========================================================
+# Nginx: Development ===========================================================
 #
-FROM web-base as web-dev
+FROM nginx-base as nginx-dev
 
 # Copy public application files
-COPY --from=app-dev /app/public /app/public
+COPY --from=php-dev /app/public /app/public
