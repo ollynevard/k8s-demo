@@ -1,2 +1,5 @@
+**/.dockerignore
+**/.gitignore
+**/Dockerfile*
 app/var
 app/vendor
