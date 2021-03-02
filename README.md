@@ -33,7 +33,7 @@ docker run \
   --rm \
   --detach \
   --network k8s-demo \
-  --hostname back-end-php \
+  --hostname php \
   --name k8s-demo-back-end-php \
   k8s-demo-back-end-php:dev
 
@@ -41,7 +41,7 @@ docker run \
   --rm \
   --detach \
   --network k8s-demo \
-  --hostname back-end-nginx \
+  --hostname nginx \
   --publish 31000:80 \
   --name k8s-demo-back-end-nginx \
   k8s-demo-back-end-nginx:dev
