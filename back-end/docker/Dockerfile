@@ -64,7 +64,7 @@ RUN set -ex; \
     phive install -g --trust-gpg-keys E82B2FB314E9906E php-cs-fixer@^2.16.4; \
     phive install -g --trust-gpg-keys 4AA394086372C20A phploc@^7.0.1; \
     phive install -g --trust-gpg-keys 8A03EA3B385DBAA1 psalm@^3.14.2; \
-    phive install -g --trust-gpg-keys EB008C0F094A779B sensiolabs-de/deptrac@^0.8.2;
+    phive install -g --trust-gpg-keys 4F2AB4D11A9A65F7 sensiolabs-de/deptrac@^0.8.2;
 
 # Copy PHP config
 COPY docker/php.ini docker/xdebug.ini /usr/local/etc/php/conf.d/
